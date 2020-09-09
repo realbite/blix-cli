@@ -1,5 +1,7 @@
 # Blix::Cli
 
+This provides the `blix` command which allows a blix REST framework environment to be
+created and updated.
 
 
 ## Installation
