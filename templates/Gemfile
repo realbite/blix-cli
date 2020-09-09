@@ -1,0 +1,33 @@
+source 'http://rubygems.org'
+
+gem "json"
+gem "puma"
+gem "blix-rest"
+gem "blix-assets"
+
+
+# test / development gems
+group :development do
+   gem 'rspec'
+   gem 'rack-test', :require=>"rack/test"
+   gem 'cucumber'
+
+   # support the asset pipeline
+   gem 'sprockets'  , "~> 4.x"
+   gem 'therubyracer'
+   gem 'execjs'
+   gem 'sass'   # for compression
+   gem 'sassc'
+   gem 'uglifier'
+   gem 'autoprefixer-rails' , "~> 8.x"
+   gem 'coffee-script'
+   gem 'guard'                , require: false
+   gem 'guard-livereload'     , require: false
+   gem "rack-livereload"
+   {%- if vuebasic %}
+   gem 'vue-compiler'
+   {%- endif %}
+   {%- if webpack  %}
+   gem 'sprockets-webpackit'
+   {%- endif %}
+end

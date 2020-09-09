@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "irb"
+require_relative '../app/application'
+
+Application.initialize
+
+IRB.start(__FILE__)

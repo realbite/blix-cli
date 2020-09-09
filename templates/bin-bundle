@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+
+ROOT            = ::File.expand_path('../..',  __FILE__)
+ENV['RACK_ENV'] = 'production'
+
+
+# add all your assets to be compiled to this list
+
+ASSETS = %w(
+  application.js
+  application.css
+)
+
+# if your application is mounted under a path in the live environment
+# then enter the path here.
+
+MOUNT_PATH = ''
+
+DEST   = 'www/assets'
+
+
+require 'bundler'
+Bundler.setup(:default, :development)
+
+require 'sprockets'
+require 'blix/assets'
+require 'uglifier'
+
+{%- if vuebasic %}
+require 'vue/sprockets'
+Vue::Compiler.set_options :version => '2.6'
+VueSprocketsCompiler.set_root %w[app]
+{%- endif %}
+
+{%- if webpack  %}
+require 'sprockets/webpackit'
+{%- endif %}
+
+environment = Sprockets::Environment.new
+
+require "autoprefixer-rails"
+
+environment.append_path 'assets/js'
+environment.append_path 'assets/css'
+
+environment.js_compressor  = Uglifier.new(:harmony => true)
+environment.css_compressor = :scss
+
+
+
+AutoprefixerRails.install(environment)
+
+Blix::AssetManager.set_path_root( MOUNT_PATH )
+
+ASSETS.each do |name|
+   print "processing #{name} ...."
+
+   str = environment[name].to_s
+
+   if File.extname(name) == ".css"
+     engine = Sass::Engine.new(str, :syntax => :scss, :style => :compressed)
+     str = engine.render
+   end
+
+   Blix::AssetManager.write_asset(DEST,name,str)
+   puts "done"
+end
+
+# SW_FILE = "sw.js"
+# SW_DEST = File.join(Dir.pwd,"www")
+#
+# print "processing service worker : #{SW_FILE} ...."
+# File.write( File.join(SW_DEST,SW_FILE),environment[SW_FILE].to_s)
+# puts "done"
